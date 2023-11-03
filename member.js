@@ -1,16 +1,6 @@
-
-export const skills = ['HTML', 'CSS', 'JS'];
-
-export const age = 13;
-
-export default class Member {
-    constructor(name) {
-        this.name = name;
-    }
+function skillsMember() {
+    return {
+        restrict: 'E',
+        templateUrl: 'skills-member.html'
+    };
 }
-export function createSkillsMember(name, age, email) {
-    return { name, age, email }; 
-}   
-
-
-createSkillsMember('pit', 13, 'pit@pit.com')
