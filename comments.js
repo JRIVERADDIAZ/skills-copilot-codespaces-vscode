@@ -1,32 +1,57 @@
-// Create a web server that can respond to requests for /comments.json
-// with a JSON-encoded array of comments, much like your server from Exercise 2
-// of the previous chapter. However, this time, use the readFile method to
-// load the comment database that you created in the previous exercise.
-// When a GET request is made to the /comments.json URL, read the comments
-// database, parse it to JSON, and respond with the JSON-encoded data.
+// create a web server that can respond to requests for comments
+// and can save new comments to a file
 
+// load the http module
 var http = require('http');
+
+// load the fs module
 var fs = require('fs');
 
+// create a server
 var server = http.createServer(function(req, res) {
-  if (req.method === 'GET' && req.url === '/comments.json') {
+
+  // if the request is a GET request for '/comments'
+  if (req.method === 'GET' && req.url === '/comments') {
+    // read the comments from the file
     fs.readFile('./comments.json', function(err, data) {
       if (err) {
+        // if there was an error reading the file, log the error
         console.error(err);
-        res.statusCode = 500;
-        res.end('Server error');
-        return;
+      } else {
+        // otherwise, send the comments back to the client
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(data);
       }
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'application/json');
-      res.end(data);
     });
-  } else {
-    res.statusCode = 404;
-    res.end('Not found');
   }
+
+  // if the request is a POST request to '/comments'
+  if (req.method === 'POST' && req.url === '/comments') {
+    // create a variable to store the data
+    var comment = '';
+
+    // on every 'data' event, add the data to the comment variable
+    req.on('data', function(data) {
+      comment += data;
+    });
+
+    // on every 'end' event, write the comment to the file
+    req.on('end', function() {
+      // write the comment to the file
+      fs.writeFile('./comments.json', comment, function(err) {
+        if (err) {
+          // if there was an error writing the file, log the error
+          console.error(err);
+        } else {
+          // otherwise, send a '201 Created' status code
+          res.writeHead(201);
+          res.end();
+        }
+      });
+    });
+  }
+
 });
 
-server.listen(3000, function() {
-  console.log('Listening on port 3000');
-});
+// listen on port 3000
+server.listen(3000);
