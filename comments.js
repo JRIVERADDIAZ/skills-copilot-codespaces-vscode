@@ -1,57 +1,51 @@
-// create a web server that can respond to requests for comments
-// and can save new comments to a file
+// Create web server
 
-// load the http module
-var http = require('http');
+var express = require('express');
+var router = express.Router();
+var bodyParser = require('body-parser');
+var Comment = require('../models/comment');
 
-// load the fs module
-var fs = require('fs');
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
 
-// create a server
-var server = http.createServer(function(req, res) {
+// CREATE A COMMENT
+router.post('/', function(req, res) {
+    Comment.create({// 1. Create web server
+// 2. Create route for /comments
+// 3. Create route for /comments/:id
+// 4. Create route for /comments/:id/upvote
+// 5. Create route for /comments/:id/downvote
 
-  // if the request is a GET request for '/comments'
-  if (req.method === 'GET' && req.url === '/comments') {
-    // read the comments from the file
-    fs.readFile('./comments.json', function(err, data) {
-      if (err) {
-        // if there was an error reading the file, log the error
-        console.error(err);
-      } else {
-        // otherwise, send the comments back to the client
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end(data);
-      }
-    });
-  }
+// 1. Create web server
+const express = require('express');
+const app = express();
+const port = 3000;
 
-  // if the request is a POST request to '/comments'
-  if (req.method === 'POST' && req.url === '/comments') {
-    // create a variable to store the data
-    var comment = '';
-
-    // on every 'data' event, add the data to the comment variable
-    req.on('data', function(data) {
-      comment += data;
-    });
-
-    // on every 'end' event, write the comment to the file
-    req.on('end', function() {
-      // write the comment to the file
-      fs.writeFile('./comments.json', comment, function(err) {
-        if (err) {
-          // if there was an error writing the file, log the error
-          console.error(err);
-        } else {
-          // otherwise, send a '201 Created' status code
-          res.writeHead(201);
-          res.end();
-        }
-      });
-    });
-  }
-
+// 2. Create route for /comments
+app.get('/comments', (req, res) => {
+  res.send('Comments page');
 });
 
-// listen on port 3000
-server.listen(3000);
+// 3. Create route for /comments/:id
+app.get('/comments/:id', (req, res) => {
+  res.send('Comment id page');
+});
+
+// 4. Create route for /comments/:id/upvote
+app.get('/comments/:id/upvote', (req, res) => {
+  res.send('Upvote page');
+});
+
+// 5. Create route for /comments/:id/downvote
+app.get('/comments/:id/downvote', (req, res) => {
+  res.send('Downvote page');
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});
+
+// 2. Create route for /comments
+// 3. Create route for /comments/:id
+// 4. Create route for /comments/:id/upvote
+// 5. Create route for /comments/:id/downvote
